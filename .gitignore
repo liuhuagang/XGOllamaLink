@@ -1,0 +1,15 @@
+# UE Project Base
+.vs/
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+DerivedDataCache/
+Build/
+.vsconfig
+*.sln
+# XG Package
+PackageTest/
+# lfs
+hooks/
+lfs/
