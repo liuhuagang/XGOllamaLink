@@ -10,6 +10,7 @@
 #include "LogXGOllama.h"
 
 UXGOllamaAysncAction::UXGOllamaAysncAction(const FObjectInitializer& ObjectInitializer)
+:Super(ObjectInitializer)
 {
 
 }
@@ -37,12 +38,6 @@ const FXGOllamaReqInfo& InReqInfo)
 void UXGOllamaAysncAction::Activate()
 {
 	Super::Activate();
-
-	AsyncTask(ENamedThreads::GameThread, [this]() {
-
-		this->Activate_Internal();
-
-		});
 
 	Then.Broadcast(AsyncID, false, 
 	TEXT("XGOllamaAysncAction is just started,please wait to be finished!"), 
@@ -107,7 +102,7 @@ void UXGOllamaAysncAction::SendHttp(const FString& InServerURL, const FString& I
 
 void UXGOllamaAysncAction::OnHttpRespReceived(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded)
 {
-	UE_LOG(LogXGOllama, Display, TEXT("[%s],AsyncID:[%s],Receive VolcanoChat Chat HttpResonpse"), *FString(__FUNCTION__), *(AsyncID.ToString()));
+	UE_LOG(LogXGOllama, Display, TEXT("[%s],AsyncID:[%s],Receive Ollma HttpResonpse"), *FString(__FUNCTION__), *(AsyncID.ToString()));
 
 	FString ResponseJson = TEXT("");
 
@@ -191,7 +186,7 @@ void UXGOllamaAysncAction::OnHttpRespReceived(FHttpRequestPtr HttpRequest, FHttp
 		}
 	}
 
-	SetReadyToDestroy();
+	RealeaseResources();
 }
 
 bool UXGOllamaAysncAction::HttpSream(void* Ptr, int64 Length)
@@ -365,5 +360,25 @@ void UXGOllamaAysncAction::CallOnFail(FGuid InAsyncID, bool bInResult, FString I
 
 void UXGOllamaAysncAction::RealeaseResources()
 {
+	Then.Clear();
+
+	OnSuccess.Clear();
+
+	OnUpdate.Clear();
+
+	OnFail.Clear();
+
+	OllmaURL.Empty();
+
+	ReqInfo = FXGOllamaReqInfo();
+
+	ErrorSteamData.Empty();
+
+	StreamData.Empty();
+
+	NoFixStreamData.Empty();
+
+	TotalString.Empty();
+
 	SetReadyToDestroy();
 }

@@ -11,7 +11,9 @@ public class XGOllamaLink : ModuleRules
 		PublicIncludePaths.AddRange(
 			new string[] {
              "$(ModuleDir)/Public/AsyncAction",
+             "$(ModuleDir)/Public/Config",
              "$(ModuleDir)/Public/Type",
+             "$(ModuleDir)/Public/Type/Version",
              "$(ModuleDir)/Public/Subsystem",
             }
 			);
@@ -21,8 +23,10 @@ public class XGOllamaLink : ModuleRules
 			new string[] {
 
                 "XGOllamaLink/Public/AsyncAction",
+                "XGOllamaLink/Public/Config",
                 "XGOllamaLink/Public/Log",
                 "XGOllamaLink/Public/Type",
+                "XGOllamaLink/Public/Type/Version",
                 "XGOllamaLink/Public/Subsystem",
                 "XGOllamaLink/Public/Util"
 
@@ -43,18 +47,24 @@ public class XGOllamaLink : ModuleRules
 			new string[]
 			{
 				"CoreUObject",
-				"Engine",
+                "DeveloperSettings",
+                "Engine",
+                "Projects",
                 "Json",
                 "JsonUtilities",
             }
 			);
-		
-		
-		DynamicallyLoadedModuleNames.AddRange(
-			new string[]
-			{
 
-			}
-			);
-	}
+        //Need to make sure Android has Launch module.
+        if (Target.Platform == UnrealTargetPlatform.Android)
+        {
+            PrivateIncludePathModuleNames.AddRange(
+                new string[] {
+                    "Launch"
+                }
+            );
+        }
+
+
+    }
 }

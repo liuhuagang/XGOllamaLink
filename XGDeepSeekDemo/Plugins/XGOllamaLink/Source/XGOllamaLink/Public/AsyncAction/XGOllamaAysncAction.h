@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Kismet/BlueprintAsyncActionBase.h"
+#include "XGOllamaBaseAsyncAction.h"
 
 #include "Interfaces/IHttpRequest.h"
 #include "HttpModule.h"
@@ -24,7 +24,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FXGOllamaDelegate,
 
 
 UCLASS(meta = (HideThen = true))
-class XGOLLAMALINK_API UXGOllamaAysncAction : public UBlueprintAsyncActionBase
+class XGOLLAMALINK_API UXGOllamaAysncAction : public UXGOllamaBaseAsyncAction
 {
 	GENERATED_BODY()
 
@@ -44,8 +44,8 @@ public:
 		Keywords = "XG Ollama AysncAction"),
 		Category = "XGOllama")
 	static UXGOllamaAysncAction* XGOllamaAysncAction(UObject* WorldContextObject,
-		const FString& InOllmaURL,
-		const FXGOllamaReqInfo& InReqInfo);
+		const FString& InOllmaURL= TEXT("http://127.0.0.1:11434/api/generate"),
+		const FXGOllamaReqInfo& InReqInfo= FXGOllamaReqInfo());
 
 	virtual void Activate() override;
 
@@ -67,7 +67,7 @@ public:
 
 protected:
 
-	virtual void Activate_Internal();
+	virtual void Activate_Internal() override;
 
 protected:
 
@@ -90,8 +90,6 @@ protected:
 	void RealeaseResources();
 
 protected:
-
-	FGuid AsyncID = FGuid::NewGuid();
 
 	FString OllmaURL =TEXT("");
 
