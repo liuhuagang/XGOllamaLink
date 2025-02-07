@@ -106,27 +106,24 @@ void UXGOllamaAysncAction::OnHttpRespReceived(FHttpRequestPtr HttpRequest, FHttp
 
 	FString ResponseJson = TEXT("");
 
-	if (HttpResponse.IsValid())
+	if (!HttpResponse.IsValid())
 	{
-		ResponseJson = HttpResponse->GetContentAsString();
-
-		UE_LOG(LogXGOllama, Verbose, TEXT("[%s],[%s]"), *FString(__FUNCTION__), *ResponseJson);
-	}
-	else
-	{
-
-
 		FXGOllamaRespInfo HttpError;
 		HttpError.bReqStream = ReqInfo.stream;
-		HttpError.bFinish = true ;
+		HttpError.bFinish = true;
 
 		UE_LOG(LogXGOllama, Warning, TEXT("[%s],Http Failed!!!!!,Message:[%s]"), *FString(__FUNCTION__), *ResponseJson);
 
 		CallOnFail(AsyncID, false, TEXT("Http Failed,Message:") + ResponseJson, HttpError);
 
+		RealeaseResources();
+
+		return;
 	}
 
+	ResponseJson = HttpResponse->GetContentAsString();
 
+	UE_LOG(LogXGOllama, Verbose, TEXT("[%s],[%s]"), *FString(__FUNCTION__), *ResponseJson);
 
 	if (bSucceeded && HttpRequest->GetStatus() == EHttpRequestStatus::Succeeded && HttpResponse->GetResponseCode() == 200)
 	{
